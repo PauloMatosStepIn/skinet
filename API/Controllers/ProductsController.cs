@@ -9,9 +9,7 @@ using API.Dtos;
 
 namespace API.Controllers
 {
-  [ApiController]
-  [Route("api/[controller]")]
-  public class ProductsController : ControllerBase
+  public class ProductsController : BaseApiController
   {
 
     // private readonly IProductRepository _repo;
