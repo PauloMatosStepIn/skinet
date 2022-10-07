@@ -6,6 +6,7 @@ using Core.Interfaces;
 using Core.Specifications;
 using AutoMapper;
 using API.Dtos;
+using API.Helpers;
 
 namespace API.Controllers
 {
@@ -34,17 +35,29 @@ namespace API.Controllers
       _mapper = mapper;
     }
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> getProducts()
+    public async Task<ActionResult<Pagination<ProductToReturnDto>>> getProducts(
+      //string sort, int? brandId, int? typeId
+      [FromQuery] ProductsSpecParams productParams //params is reserved word
+      )
     {
       // var products = await _context.Products.ToListAsync();
       // var products = await _repo.GetProductsAsync();
       // var products = await _productsRepo.ListAllAsync();
 
-      var spec = new ProductsWithTypesAndBrandsSpecification();
+      // var spec = new ProductsWithTypesAndBrandsSpecification(sort, brandId, typeId);
+      var spec = new ProductsWithTypesAndBrandsSpecification(productParams);
+
+      var countSpec = new ProductWithFiltersForCountSpecification(productParams);
+
+      var totalItems = await _productsRepo.CountAsync(countSpec);
 
       var products = await _productsRepo.ListAsync(spec);
 
-      return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
+      // return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
+
+      var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
+
+      return Ok(new Pagination<ProductToReturnDto>(productParams.PageIndex, productParams.PageSize,totalItems,data));
 
       // return Ok(products);
     }

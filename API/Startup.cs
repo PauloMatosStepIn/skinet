@@ -3,9 +3,9 @@ using API.Helpers;
 using API.Middleware;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-
 namespace API
 {
+
   public class Startup
   {
     private readonly IConfiguration _config;
@@ -54,6 +54,16 @@ namespace API
       //   c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
       // });
 
+      //Allow cross origin from javascript
+
+      services.AddCors(opt =>
+      {
+        opt.AddPolicy("CorsPolicy", policy =>
+        {
+          policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+        });
+      });
+
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,6 +90,10 @@ namespace API
 
       //serve static content (from wwwwroot)
       app.UseStaticFiles();
+
+      //cors must be before Authorization
+      app.UseCors("CorsPolicy");
+
       app.UseAuthorization();
       app.UseEndpoints(endpoints =>
       {
