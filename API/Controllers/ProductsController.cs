@@ -7,6 +7,7 @@ using Core.Specifications;
 using AutoMapper;
 using API.Dtos;
 using API.Helpers;
+using API.Errors;
 
 namespace API.Controllers
 {
@@ -57,12 +58,14 @@ namespace API.Controllers
 
       var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
 
-      return Ok(new Pagination<ProductToReturnDto>(productParams.PageIndex, productParams.PageSize,totalItems,data));
+      return Ok(new Pagination<ProductToReturnDto>(productParams.PageIndex, productParams.PageSize, totalItems, data));
 
       // return Ok(products);
     }
 
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductToReturnDto>> getProduct(int id)
     {
       // return await _context.Products.FindAsync(id);
@@ -72,6 +75,8 @@ namespace API.Controllers
       var spec = new ProductsWithTypesAndBrandsSpecification(id);
 
       var product = await _productsRepo.GetEntityWithSpec(spec);
+
+      if (product == null) return NotFound(new ApiResponse(404));
 
       return _mapper.Map<Product, ProductToReturnDto>(product);
     }

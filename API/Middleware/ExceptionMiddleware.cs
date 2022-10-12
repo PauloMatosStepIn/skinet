@@ -29,7 +29,7 @@ namespace API.Middleware
         //if no exception the request follow to the next step
         await _next(context);
       }
-      catch (System.Exception ex)
+      catch (Exception ex)
       {
         //Our errror system is the console, that receives the error
         _logger.LogError(ex, ex.Message);
