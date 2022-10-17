@@ -2,6 +2,7 @@ using API.Extensions;
 using API.Helpers;
 using API.Middleware;
 using Infrastructure.Data;
+using Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
@@ -28,6 +29,9 @@ namespace API
 
       services.AddDbContext<StoreContext>(x => x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
 
+      services.AddDbContext<AppIdentityDbContext>(x => x.UseSqlite(_config.GetConnectionString("IdentityConnection")));
+
+      services.AddIdentityServices(_config);
       //Redis
       services.AddSingleton<IConnectionMultiplexer>(c =>
       {
@@ -104,6 +108,7 @@ namespace API
       //cors must be before Authorization
       app.UseCors("CorsPolicy");
 
+      app.UseAuthentication();
       app.UseAuthorization();
       app.UseEndpoints(endpoints =>
       {
