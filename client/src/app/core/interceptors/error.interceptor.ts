@@ -19,6 +19,8 @@ export class ErrorInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       catchError(error => {
+        console.log(error);
+        
         if (error) {
           if (error.status === 400) {
             if (error.error.errors) {
@@ -27,7 +29,9 @@ export class ErrorInterceptor implements HttpInterceptor {
               this.toastr.error(error.error.message, error.error.statusCode);
             }
           }
-
+          if (error.status === 401) {
+            this.toastr.error(error.error.message, error.error.statusCode);
+          }
           if (error.status === 404) {
             this.router.navigateByUrl('/not-found');
           }
