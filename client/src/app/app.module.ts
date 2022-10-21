@@ -14,6 +14,7 @@ import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
 import { SharedModule } from './shared/shared.module';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
+import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 
 // Register the localization
 registerLocaleData(localePt, 'pt-PT');
@@ -35,6 +36,7 @@ registerLocaleData(localePt, 'pt-PT');
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     {
       provide: LOCALE_ID,
       useValue: 'pt-PT'
