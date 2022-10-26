@@ -4,18 +4,21 @@ button.nav-link {
   border: none;
 
   &:focus {
-      outline: none;
+    outline: none;
   }
   &.active:hover {
-      color: white;
+    color: white;
   }
   & :active {
-      outline: none;
+    outline: none;
   }
   &.active:focus {
-      outline: none;
+    outline: none;
   }
   &:disabled:not(.active) {
-      color: #333;
+    color: #333;
+  }
+  &:disabled:not(.active) {
+    color: #333;
   }
 }

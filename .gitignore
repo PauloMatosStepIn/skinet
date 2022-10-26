@@ -3,3 +3,8 @@ bin
 appsettings.json
 *.rdb
 *.db
+client/src/environments/environment.ts
+client/src/environments/environment.prod.ts
+
+API/identity.db-shm
+API/identity.db-wal
