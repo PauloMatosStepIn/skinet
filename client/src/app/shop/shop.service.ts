@@ -7,12 +7,13 @@ import { map } from 'rxjs/operators';
 import { ShopParams } from '../shared/models/shopParams';
 import { IProduct } from '../shared/models/products';
 import { of } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ShopService {
-  baseUrl = 'https://localhost:5001/api/';
+  baseUrl = environment.apiUrl;
   products: IProduct[] = [];
   brands: IBrand[] = [];
   types: IType[] = [];
@@ -60,7 +61,7 @@ export class ShopService {
         map(response => {
           // this.products = response.body.data;
           // this.products = [...this.products, ...response.body.data];
-          this.productCache.set(Object.values(this.shopParams).join('-'),response.body.data);
+          this.productCache.set(Object.values(this.shopParams).join('-'), response.body.data);
           this.pagination = response.body;
           // return response.body;
           return this.pagination;
@@ -77,9 +78,9 @@ export class ShopService {
 
   getProduct(id: number) {
     // const product = this.products.find(p => p.id === id);
-    let product:IProduct;
-    this.productCache.forEach((products: IProduct[])=>{
-      product = products.find(p=>p.id === id);
+    let product: IProduct;
+    this.productCache.forEach((products: IProduct[]) => {
+      product = products.find(p => p.id === id);
     })
 
     if (product) {

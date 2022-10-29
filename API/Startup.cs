@@ -4,6 +4,7 @@ using API.Middleware;
 using Infrastructure.Data;
 using Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using StackExchange.Redis;
 
 namespace API
@@ -27,9 +28,15 @@ namespace API
       services.AddAutoMapper(typeof(MappingProfiles));
       services.AddControllers();
 
-      services.AddDbContext<StoreContext>(x => x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
+      //SqlLite
+      // services.AddDbContext<StoreContext>(x => x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
+      //PostGres
+      services.AddDbContext<StoreContext>(x => x.UseNpgsql(_config.GetConnectionString("DefaultConnection")));
 
-      services.AddDbContext<AppIdentityDbContext>(x => x.UseSqlite(_config.GetConnectionString("IdentityConnection")));
+      //SqlLite
+      //services.AddDbContext<AppIdentityDbContext>(x => x.UseSqlite(_config.GetConnectionString("IdentityConnection")));
+      //PostGres
+      services.AddDbContext<AppIdentityDbContext>(x => x.UseNpgsql(_config.GetConnectionString("IdentityConnection")));
 
       services.AddIdentityServices(_config);
       //Redis
@@ -104,6 +111,15 @@ namespace API
 
       //serve static content (from wwwwroot)
       app.UseStaticFiles();
+      app.UseStaticFiles(
+        new StaticFileOptions
+        {
+          FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "Content")
+          ),
+          RequestPath = "/content"
+        }
+      );
 
       //cors must be before Authorization
       app.UseCors("CorsPolicy");
@@ -113,6 +129,7 @@ namespace API
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllers();
+        endpoints.MapFallbackToController("Index", "Fallback");
       });
     }
   }
