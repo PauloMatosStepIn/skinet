@@ -8,3 +8,5 @@ client/src/environments/environment.prod.ts
 
 API/identity.db-shm
 API/identity.db-wal
+
+API/wwwroot
